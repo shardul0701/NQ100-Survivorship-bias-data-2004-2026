@@ -1,0 +1,158 @@
+---
+
+year: 2008
+
+tickers_on_Jan_1:
+ - AAPL
+ - ADBE
+ - ADSK
+ - AKAM
+ - ALTR
+ - AMAT
+ - AMGN
+ - AMLN
+ - AMZN
+ - APOL
+ - ATVI
+ - BBBY
+ - BEAS
+ - BIDU
+ - BIIB
+ - BRCM
+ - CDNS
+ - CELG
+ - CEPH
+ - CHKP
+ - CHRW
+ - CMCSA
+ - COST
+ - CSCO
+ - CTAS
+ - CTSH
+ - CTXS
+ - DELL
+ - DISCA
+ - DISCK
+ - DISH
+ - EA
+ - EBAY
+ - ESRX
+ - EXPD
+ - EXPE
+ - FAST
+ - FISV
+ - FLEX
+ - FMCN
+ - FWLT
+ - GENZ
+ - GILD
+ - GOOGL
+ - GRMN
+ - HANS
+ - HOLX
+ - IACI
+ - INFY
+ - INTC
+ - INTU
+ - ISRG
+ - JAVA
+ - JNPR
+ - JOYG
+ - KLAC
+ - LAMR
+ - LBTYA
+ - LEAP
+ - LLTC
+ - LMCK
+ - LOGI
+ - LRCX
+ - LVLT
+ - MCHP
+ - MICC
+ - MNST
+ - MRVL
+ - MSFT
+ - NIHD
+ - NLOK
+ - NTAP
+ - NVDA
+ - ORCL
+ - PAYX
+ - PCAR
+ - PDCO
+ - PETM
+ - QCOM
+ - QRTEA
+ - RIMM
+ - RYAAY
+ - SBUX
+ - SHLD
+ - SIAL
+ - SIRI
+ - SNDK
+ - SPLS
+ - SRCL
+ - STLD
+ - TEVA
+ - TLAB
+ - UAUA
+ - VMED
+ - VRSN
+ - VRTX
+ - WFM
+ - WYNN
+ - XLNX
+ - XRAY
+ - YHOO
+
+changes:
+
+ '2008-04-30':
+  difference:
+  - BEAS
+  union:
+  - DTV
+
+ '2008-05-19':
+  difference:
+  - TLAB
+  union:
+  - CA
+
+ '2008-07-21':
+  difference:
+  - UAUA
+  union:
+  - FLIR
+
+ '2008-11-10':
+  difference:
+  - MNST
+  union:
+  - STX
+
+ '2008-12-22':
+  difference:
+  - AMLN
+  - CDNS
+  - DISCA
+  - LAMR
+  - LEAP
+  - LVLT
+  - PETM
+  - SIRI
+  - SNDK
+  - VMED
+  - WFM
+  union:
+  - ADP
+  - FSLR
+  - ILMN
+  - JBHT
+  - LIFE
+  - MXIM
+  - ORLY
+  - PPDI
+  - ROST
+  - URBN
+  - WCRX

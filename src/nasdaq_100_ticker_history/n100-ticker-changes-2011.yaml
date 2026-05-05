@@ -1,0 +1,146 @@
+---
+
+year: 2011
+
+tickers_on_Jan_1:
+ - AAPL
+ - ADBE
+ - ADP
+ - ADSK
+ - AKAM
+ - ALTR
+ - AMAT
+ - AMGN
+ - AMZN
+ - APOL
+ - ATVI
+ - BBBY
+ - BIDU
+ - BIIB
+ - BKNG
+ - BMC
+ - BRCM
+ - CA
+ - CELG
+ - CEPH
+ - CERN
+ - CHKP
+ - CHRW
+ - CMCSA
+ - COST
+ - CSCO
+ - CTRP
+ - CTSH
+ - CTXS
+ - DELL
+ - DISCK
+ - DLTR
+ - DTV
+ - EA
+ - EBAY
+ - ESRX
+ - EXPD
+ - EXPE
+ - FAST
+ - FFIV
+ - FISV
+ - FLEX
+ - FLIR
+ - FOXA
+ - FSLR
+ - GENZ
+ - GILD
+ - GOOGL
+ - GRMN
+ - ILMN
+ - INFY
+ - INTC
+ - INTU
+ - ISRG
+ - JOYG
+ - KLAC
+ - LIFE
+ - LLTC
+ - LMCK
+ - LRCX
+ - MAT
+ - MCHP
+ - MICC
+ - MRVL
+ - MSFT
+ - MU
+ - MXIM
+ - MYL
+ - NFLX
+ - NIHD
+ - NLOK
+ - NTAP
+ - NVDA
+ - ORCL
+ - ORLY
+ - PAYX
+ - PCAR
+ - QCOM
+ - QGEN
+ - QRTEA
+ - RIMM
+ - ROST
+ - SBUX
+ - SHLD
+ - SIAL
+ - SNDK
+ - SPLS
+ - SRCL
+ - STX
+ - TEVA
+ - URBN
+ - VMED
+ - VOD
+ - VRSN
+ - VRTX
+ - WCRX
+ - WFM
+ - WYNN
+ - XLNX
+ - XRAY
+ - YHOO
+
+changes:
+
+ '2011-04-04':
+  difference:
+  - GENZ
+  union:
+  - ALXN
+
+ '2011-05-27':
+  difference:
+  - MICC
+  union:
+  - GMCR
+
+ '2011-07-15':
+  difference:
+  - CEPH
+  union:
+  - SIRI
+
+ '2011-12-06':
+  difference:
+  - JOYG
+  union:
+  - PRGO
+
+ '2011-12-19':
+  difference:
+  - FLIR
+  - ILMN
+  - NIHD
+  - QGEN
+  - URBN
+  union:
+  - AVGO
+  - FOSL
+  - GOLD
+  - HANS
+  - NUAN

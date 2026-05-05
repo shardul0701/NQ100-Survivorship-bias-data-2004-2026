@@ -1,0 +1,31 @@
+{
+  "construction_method": "Rolled membership backward from upstream Jan 1 2015 list and forward-validated year-to-year continuity.",
+  "known_symbol_notes": {
+    "BKNG": "Used to align with upstream 2015 file, though historical Nasdaq-100 table used PCLN before Booking Holdings ticker rename.",
+    "MNST/HANS": "Hansen Natural changed to Monster Beverage ticker MNST on 2012-01-09; a synthetic ticker rename row is included in 2012. Note MNST was also used historically by Monster Worldwide before removal in 2008.",
+    "QRTEA/LINTA": "2006 Liberty Interactive addition normalized to QRTEA for compatibility with upstream 2015 ticker conventions.",
+    "WFM/WFMI": "Whole Foods represented as WFM for compatibility with upstream 2015 file.",
+    "CMCSK": "2014 source table lists CMCSK as a second Comcast class, but upstream 2015 file has CMCSA rather than CMCSK; omitted to avoid adding a symbol not present upstream.",
+    "HSIC": "Upstream 2015 file contains HSIC, but public change tables found during this run show a 2004 removal and no clear re-add before 2015; included as a synthetic 2014-12-22 union row so the backfill remains forward-consistent.",
+    "RHAT": "Red Hat was added in 2005 and moved from Nasdaq to NYSE in December 2006; represented as a removal-only row for continuity.",
+    "KFT/MDLZ/KRFT": "KFT addition in 2012 is followed by a synthetic KFT->MDLZ ticker-change row on 2012-10-02; KRFT remains as a separate later Kraft Foods Group symbol."
+  },
+  "reverse_warnings": [],
+  "forward_warnings": [],
+  "jan1_counts": {
+    "2004": 102,
+    "2005": 102,
+    "2006": 102,
+    "2007": 101,
+    "2008": 101,
+    "2009": 101,
+    "2010": 101,
+    "2011": 101,
+    "2012": 101,
+    "2013": 101,
+    "2014": 101,
+    "2015": 105
+  },
+  "canonical_data_note": "Canonical 2015-2026 files in src/ are copied from jmccarrell/n100tickers raw files as downloaded on 2026-05-05. Canonical 2004-2014 files are reconstructed research-grade backfill.",
+  "repo_generated_on": "2026-05-05"
+}

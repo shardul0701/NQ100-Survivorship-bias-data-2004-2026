@@ -1,0 +1,149 @@
+---
+
+year: 2005
+
+tickers_on_Jan_1:
+ - AAPL
+ - ADBE
+ - ADSK
+ - AEOS
+ - ALTR
+ - AMAT
+ - AMGN
+ - AMZN
+ - APCC
+ - APOL
+ - ATYT
+ - BBBY
+ - BEAS
+ - BIIB
+ - BMET
+ - BRCM
+ - CDWC
+ - CECO
+ - CHIR
+ - CHKP
+ - CHRW
+ - CMCSA
+ - CMVT
+ - COST
+ - CSCO
+ - CTAS
+ - CTSH
+ - CTXS
+ - DELL
+ - DISCK
+ - DISH
+ - DLTR
+ - EA
+ - EBAY
+ - ERIC
+ - ESRX
+ - EXPD
+ - FAST
+ - FISV
+ - FLEX
+ - GENZ
+ - GILD
+ - GRMN
+ - IACI
+ - INTC
+ - INTU
+ - ISIL
+ - IVGN
+ - JAVA
+ - JDSU
+ - JNPR
+ - KLAC
+ - LAMR
+ - LBTYA
+ - LLTC
+ - LMCK
+ - LNCR
+ - LRCX
+ - LVLT
+ - MCHP
+ - MCIP
+ - MEDI
+ - MERQE
+ - MLNM
+ - MOLX
+ - MRVL
+ - MSFT
+ - NLOK
+ - NTAP
+ - NTLI
+ - NVLS
+ - NXTL
+ - ORCL
+ - PAYX
+ - PCAR
+ - PDCO
+ - PETM
+ - PIXR
+ - QCOM
+ - QLGC
+ - RIMM
+ - ROST
+ - SANM
+ - SBUX
+ - SEBL
+ - SHLD
+ - SIAL
+ - SIRI
+ - SNDK
+ - SNPS
+ - SPLS
+ - SSCC
+ - TEVA
+ - TLAB
+ - VRSN
+ - VRTS
+ - WFM
+ - WYNN
+ - XLNX
+ - XMSR
+ - XRAY
+ - YHOO
+
+changes:
+
+ '2005-07-05':
+  difference:
+  - VRTS
+  union:
+  - CELG
+
+ '2005-08-15':
+  difference:
+  - NXTL
+  union:
+  - SEPR
+
+ '2005-12-19':
+  difference:
+  - CECO
+  - DLTR
+  - ISIL
+  - IVGN
+  - LVLT
+  - MLNM
+  - MOLX
+  - NVLS
+  - QLGC
+  - SANM
+  - SNPS
+  - SSCC
+  union:
+  - ATVI
+  - CDNS
+  - CKFR
+  - DISCA
+  - EXPE
+  - GOOGL
+  - MNST
+  - NIHD
+  - NVDA
+  - PTEN
+  - RHAT
+  - URBN

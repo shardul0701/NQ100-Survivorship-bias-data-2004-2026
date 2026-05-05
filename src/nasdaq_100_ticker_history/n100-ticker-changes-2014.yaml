@@ -1,0 +1,126 @@
+---
+
+year: 2014
+
+tickers_on_Jan_1:
+ - AAPL
+ - ADBE
+ - ADI
+ - ADP
+ - ADSK
+ - AKAM
+ - ALTR
+ - ALXN
+ - AMAT
+ - AMGN
+ - AMZN
+ - ATVI
+ - AVGO
+ - BBBY
+ - BIDU
+ - BIIB
+ - BKNG
+ - BRCM
+ - CA
+ - CELG
+ - CERN
+ - CHKP
+ - CHRW
+ - CHTR
+ - CMCSA
+ - COST
+ - CSCO
+ - CTRX
+ - CTSH
+ - CTXS
+ - DISCA
+ - DISCK
+ - DISH
+ - DLTR
+ - DTV
+ - EBAY
+ - EQIX
+ - ESRX
+ - EXPD
+ - EXPE
+ - FAST
+ - FB
+ - FFIV
+ - FISV
+ - FOXA
+ - GILD
+ - GMCR
+ - GOOGL
+ - GRMN
+ - ILMN
+ - INTC
+ - INTU
+ - ISRG
+ - KLAC
+ - KRFT
+ - LBTYA
+ - LLTC
+ - LMCA
+ - LMCK
+ - MAR
+ - MAT
+ - MDLZ
+ - MNST
+ - MSFT
+ - MU
+ - MXIM
+ - MYL
+ - NFLX
+ - NLOK
+ - NTAP
+ - NVDA
+ - NXPI
+ - ORLY
+ - PAYX
+ - PCAR
+ - QCOM
+ - QRTEA
+ - REGN
+ - ROST
+ - SBAC
+ - SBUX
+ - SIAL
+ - SIRI
+ - SNDK
+ - SPLS
+ - SRCL
+ - STX
+ - TRIP
+ - TSCO
+ - TSLA
+ - TXN
+ - VIAB
+ - VIP
+ - VOD
+ - VRSK
+ - VRTX
+ - WDC
+ - WFM
+ - WYNN
+ - XLNX
+ - YHOO
+
+changes:
+
+ '2014-04-03':
+  difference:
+  union:
+  - GOOG
+
+ '2014-12-22':
+  difference:
+  - EXPE
+  - FFIV
+  - MXIM
+  union:
+  - AAL
+  - EA
+  - FOX
+  - HSIC
+  - LBTYK
+  - LRCX

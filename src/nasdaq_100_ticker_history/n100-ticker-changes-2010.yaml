@@ -1,0 +1,126 @@
+---
+
+year: 2010
+
+tickers_on_Jan_1:
+ - AAPL
+ - ADBE
+ - ADP
+ - ADSK
+ - ALTR
+ - AMAT
+ - AMGN
+ - AMZN
+ - APOL
+ - ATVI
+ - BBBY
+ - BIDU
+ - BIIB
+ - BKNG
+ - BMC
+ - BRCM
+ - CA
+ - CELG
+ - CEPH
+ - CERN
+ - CHKP
+ - CHRW
+ - CMCSA
+ - COST
+ - CSCO
+ - CTAS
+ - CTSH
+ - CTXS
+ - DELL
+ - DISCK
+ - DISH
+ - DTV
+ - EA
+ - EBAY
+ - ESRX
+ - EXPD
+ - EXPE
+ - FAST
+ - FISV
+ - FLEX
+ - FLIR
+ - FOXA
+ - FSLR
+ - FWLT
+ - GENZ
+ - GILD
+ - GOOGL
+ - GRMN
+ - HOLX
+ - ILMN
+ - INFY
+ - INTC
+ - INTU
+ - ISRG
+ - JBHT
+ - JOYG
+ - KLAC
+ - LIFE
+ - LLTC
+ - LMCK
+ - LOGI
+ - LRCX
+ - MAT
+ - MCHP
+ - MICC
+ - MRVL
+ - MSFT
+ - MXIM
+ - MYL
+ - NIHD
+ - NLOK
+ - NTAP
+ - NVDA
+ - ORCL
+ - ORLY
+ - PAYX
+ - PCAR
+ - PDCO
+ - QCOM
+ - QGEN
+ - QRTEA
+ - RIMM
+ - ROST
+ - SBUX
+ - SHLD
+ - SIAL
+ - SNDK
+ - SPLS
+ - SRCL
+ - STX
+ - TEVA
+ - URBN
+ - VMED
+ - VOD
+ - VRSN
+ - VRTX
+ - WCRX
+ - WYNN
+ - XLNX
+ - XRAY
+ - YHOO
+
+changes:
+
+ '2010-12-20':
+  difference:
+  - CTAS
+  - DISH
+  - FWLT
+  - HOLX
+  - JBHT
+  - LOGI
+  - PDCO
+  union:
+  - AKAM
+  - CTRP
+  - DLTR
+  - FFIV
+  - MU
+  - NFLX
+  - WFM
