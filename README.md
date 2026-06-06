@@ -83,6 +83,22 @@ This checks:
 - ticker lists have no duplicates
 - applying year `Y` changes produces year `Y+1` Jan. 1 membership
 
+## Official-source refresh
+
+The repository includes a fail-closed weekly refresh that checks official Nasdaq sources,
+retains raw snapshots and audit reports, and opens a pull request for manual review:
+
+```bash
+python scripts/fetch_official_nq100_announcements.py
+python scripts/update_membership_yaml.py --index nq100 --dry-run
+python scripts/validate_membership.py --index nq100
+python scripts/audit_membership_update.py
+python scripts/check_freshness.py --index nq100
+```
+
+See `MERGE_OR_REFRESH_SPEC.md` for the source registry, confidence rules, correction mode,
+validation behavior, and pull-request workflow.
+
 ## How to get the universe for a date
 
 Example:

@@ -1,0 +1,26 @@
+repository_index: nq100
+confidence_threshold: 0.90
+
+sources:
+  - index_name: Nasdaq-100
+    source_name: Nasdaq Investor Relations News Releases
+    source_url: https://ir.nasdaq.com/news-and-events/press-releases
+    source_type: html
+    parser_name: nasdaq_ir_archive
+    official_source: true
+    enabled: true
+    discovery: true
+    notes: Official Nasdaq press-release archive; discovery is title-filtered for NDX changes.
+    seed_urls:
+      - https://ir.nasdaq.com/news-releases/news-release-details/annual-changes-nasdaq-100-indexr-2
+      - https://ir.nasdaq.com/news-releases/news-release-details/sandisk-corporation-join-nasdaq-100-indexr-beginning-april-20
+
+  - index_name: Nasdaq-100
+    source_name: Nasdaq Global Indexes NDX Overview
+    source_url: https://indexes.nasdaqomx.com/Index/overview/NDX
+    source_type: html
+    parser_name: freshness_only
+    official_source: true
+    enabled: false
+    discovery: false
+    notes: Official index overview; disabled for membership parsing because full component data may require login.

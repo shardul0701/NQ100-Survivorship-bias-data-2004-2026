@@ -1,0 +1,133 @@
+# Membership Validation Report
+
+- Index: Nasdaq-100
+- Generated: 2026-06-06T17:59:46+00:00
+- YAML files: 23
+- Errors: 0
+- Warnings: 119
+
+## Errors
+
+- None
+
+## Warnings
+
+- n100-ticker-changes-2004.yaml 2004-12-20: legacy change has no official source metadata
+- n100-ticker-changes-2004.yaml 2004-12-29: legacy change has no official source metadata
+- n100-ticker-changes-2005.yaml 2005-07-05: legacy change has no official source metadata
+- n100-ticker-changes-2005.yaml 2005-08-15: legacy change has no official source metadata
+- n100-ticker-changes-2005.yaml 2005-12-19: legacy change has no official source metadata
+- n100-ticker-changes-2006.yaml 2006-01-04: legacy change has no official source metadata
+- n100-ticker-changes-2006.yaml 2006-01-09: legacy change has no official source metadata
+- n100-ticker-changes-2006.yaml 2006-02-01: legacy change has no official source metadata
+- n100-ticker-changes-2006.yaml 2006-04-20: legacy change has no official source metadata
+- n100-ticker-changes-2006.yaml 2006-05-08: legacy change has no official source metadata
+- n100-ticker-changes-2006.yaml 2006-10-24: legacy change has no official source metadata
+- n100-ticker-changes-2006.yaml 2006-12-12: legacy change has no official source metadata
+- n100-ticker-changes-2006.yaml 2006-12-18: legacy change has no official source metadata
+- n100-ticker-changes-2007.yaml 2007-02-01: legacy change has no official source metadata
+- n100-ticker-changes-2007.yaml 2007-02-14: legacy change has no official source metadata
+- n100-ticker-changes-2007.yaml 2007-03-08: legacy change has no official source metadata
+- n100-ticker-changes-2007.yaml 2007-06-01: legacy change has no official source metadata
+- n100-ticker-changes-2007.yaml 2007-07-12: legacy change has no official source metadata
+- n100-ticker-changes-2007.yaml 2007-08-27: legacy change has no official source metadata
+- n100-ticker-changes-2007.yaml 2007-10-08: legacy change has no official source metadata
+- n100-ticker-changes-2007.yaml 2007-12-04: legacy change has no official source metadata
+- n100-ticker-changes-2007.yaml 2007-12-24: legacy change has no official source metadata
+- n100-ticker-changes-2008.yaml 2008-04-30: legacy change has no official source metadata
+- n100-ticker-changes-2008.yaml 2008-05-19: legacy change has no official source metadata
+- n100-ticker-changes-2008.yaml 2008-07-21: legacy change has no official source metadata
+- n100-ticker-changes-2008.yaml 2008-11-10: legacy change has no official source metadata
+- n100-ticker-changes-2008.yaml 2008-12-22: legacy change has no official source metadata
+- n100-ticker-changes-2009.yaml 2009-01-20: legacy change has no official source metadata
+- n100-ticker-changes-2009.yaml 2009-07-17: legacy change has no official source metadata
+- n100-ticker-changes-2009.yaml 2009-10-29: legacy change has no official source metadata
+- n100-ticker-changes-2009.yaml 2009-12-21: legacy change has no official source metadata
+- n100-ticker-changes-2010.yaml 2010-12-20: legacy change has no official source metadata
+- n100-ticker-changes-2011.yaml 2011-04-04: legacy change has no official source metadata
+- n100-ticker-changes-2011.yaml 2011-05-27: legacy change has no official source metadata
+- n100-ticker-changes-2011.yaml 2011-07-15: legacy change has no official source metadata
+- n100-ticker-changes-2011.yaml 2011-12-06: legacy change has no official source metadata
+- n100-ticker-changes-2011.yaml 2011-12-19: legacy change has no official source metadata
+- n100-ticker-changes-2012.yaml 2012-01-09: legacy change has no official source metadata
+- n100-ticker-changes-2012.yaml 2012-04-23: legacy change has no official source metadata
+- n100-ticker-changes-2012.yaml 2012-05-30: legacy change has no official source metadata
+- n100-ticker-changes-2012.yaml 2012-07-23: legacy change has no official source metadata
+- n100-ticker-changes-2012.yaml 2012-10-02: legacy change has no official source metadata
+- n100-ticker-changes-2012.yaml 2012-12-12: legacy change has no official source metadata
+- n100-ticker-changes-2012.yaml 2012-12-24: legacy change has no official source metadata
+- n100-ticker-changes-2013.yaml 2013-01-15: legacy change has no official source metadata
+- n100-ticker-changes-2013.yaml 2013-03-18: legacy change has no official source metadata
+- n100-ticker-changes-2013.yaml 2013-06-05: legacy change has no official source metadata
+- n100-ticker-changes-2013.yaml 2013-06-06: legacy change has no official source metadata
+- n100-ticker-changes-2013.yaml 2013-07-15: legacy change has no official source metadata
+- n100-ticker-changes-2013.yaml 2013-07-25: legacy change has no official source metadata
+- n100-ticker-changes-2013.yaml 2013-08-22: legacy change has no official source metadata
+- n100-ticker-changes-2013.yaml 2013-10-29: legacy change has no official source metadata
+- n100-ticker-changes-2013.yaml 2013-11-18: legacy change has no official source metadata
+- n100-ticker-changes-2013.yaml 2013-12-23: legacy change has no official source metadata
+- n100-ticker-changes-2014.yaml 2014-04-03: legacy change has no official source metadata
+- n100-ticker-changes-2014.yaml 2014-12-22: legacy change has no official source metadata
+- n100-ticker-changes-2015.yaml 2015-03-23: legacy change has no official source metadata
+- n100-ticker-changes-2015.yaml 2015-07-02: legacy change has no official source metadata
+- n100-ticker-changes-2015.yaml 2015-07-27: legacy change has no official source metadata
+- n100-ticker-changes-2015.yaml 2015-07-29: legacy change has no official source metadata
+- n100-ticker-changes-2015.yaml 2015-08-03: legacy change has no official source metadata
+- n100-ticker-changes-2015.yaml 2015-10-07: legacy change has no official source metadata
+- n100-ticker-changes-2015.yaml 2015-11-11: legacy change has no official source metadata
+- n100-ticker-changes-2015.yaml 2015-12-21: legacy change has no official source metadata
+- n100-ticker-changes-2016.yaml 2016-02-22: legacy change has no official source metadata
+- n100-ticker-changes-2016.yaml 2016-03-16: legacy change has no official source metadata
+- n100-ticker-changes-2016.yaml 2016-04-18: legacy change has no official source metadata
+- n100-ticker-changes-2016.yaml 2016-06-10: legacy change has no official source metadata
+- n100-ticker-changes-2016.yaml 2016-07-18: legacy change has no official source metadata
+- n100-ticker-changes-2016.yaml 2016-10-19: legacy change has no official source metadata
+- n100-ticker-changes-2016.yaml 2016-12-19: legacy change has no official source metadata
+- n100-ticker-changes-2017.yaml 2017-02-07: legacy change has no official source metadata
+- n100-ticker-changes-2017.yaml 2017-03-20: legacy change has no official source metadata
+- n100-ticker-changes-2017.yaml 2017-04-24: legacy change has no official source metadata
+- n100-ticker-changes-2017.yaml 2017-06-19: legacy change has no official source metadata
+- n100-ticker-changes-2017.yaml 2017-10-23: legacy change has no official source metadata
+- n100-ticker-changes-2017.yaml 2017-12-18: legacy change has no official source metadata
+- n100-ticker-changes-2018.yaml 2018-07-23: legacy change has no official source metadata
+- n100-ticker-changes-2018.yaml 2018-11-05: legacy change has no official source metadata
+- n100-ticker-changes-2018.yaml 2018-11-19: legacy change has no official source metadata
+- n100-ticker-changes-2018.yaml 2018-12-24: legacy change has no official source metadata
+- n100-ticker-changes-2019.yaml 2019-11-05: legacy change has no official source metadata
+- n100-ticker-changes-2019.yaml 2019-11-19: legacy change has no official source metadata
+- n100-ticker-changes-2019.yaml 2019-12-23: legacy change has no official source metadata
+- n100-ticker-changes-2020.yaml 2020-04-20: legacy change has no official source metadata
+- n100-ticker-changes-2020.yaml 2020-04-30: legacy change has no official source metadata
+- n100-ticker-changes-2020.yaml 2020-06-22: legacy change has no official source metadata
+- n100-ticker-changes-2020.yaml 2020-07-20: legacy change has no official source metadata
+- n100-ticker-changes-2020.yaml 2020-08-24: legacy change has no official source metadata
+- n100-ticker-changes-2020.yaml 2020-10-19: legacy change has no official source metadata
+- n100-ticker-changes-2020.yaml 2020-12-21: legacy change has no official source metadata
+- n100-ticker-changes-2021.yaml 2021-07-21: legacy change has no official source metadata
+- n100-ticker-changes-2021.yaml 2021-08-26: legacy change has no official source metadata
+- n100-ticker-changes-2021.yaml 2021-12-20: legacy change has no official source metadata
+- n100-ticker-changes-2022.yaml 2022-01-24: legacy change has no official source metadata
+- n100-ticker-changes-2022.yaml 2022-02-02: legacy change has no official source metadata
+- n100-ticker-changes-2022.yaml 2022-02-22: legacy change has no official source metadata
+- n100-ticker-changes-2022.yaml 2022-06-09: legacy change has no official source metadata
+- n100-ticker-changes-2022.yaml 2022-11-21: legacy change has no official source metadata
+- n100-ticker-changes-2022.yaml 2022-12-19: legacy change has no official source metadata
+- n100-ticker-changes-2023.yaml 2023-06-07: legacy change has no official source metadata
+- n100-ticker-changes-2023.yaml 2023-06-20: legacy change has no official source metadata
+- n100-ticker-changes-2023.yaml 2023-07-17: legacy change has no official source metadata
+- n100-ticker-changes-2023.yaml 2023-12-14: legacy change has no official source metadata
+- n100-ticker-changes-2023.yaml 2023-12-18: legacy change has no official source metadata
+- n100-ticker-changes-2024.yaml 2024-03-18: legacy change has no official source metadata
+- n100-ticker-changes-2024.yaml 2024-06-24: legacy change has no official source metadata
+- n100-ticker-changes-2024.yaml 2024-07-22: legacy change has no official source metadata
+- n100-ticker-changes-2024.yaml 2024-11-18: legacy change has no official source metadata
+- n100-ticker-changes-2024.yaml 2024-12-23: legacy change has no official source metadata
+- n100-ticker-changes-2025.yaml 2025-05-19: legacy change has no official source metadata
+- n100-ticker-changes-2025.yaml 2025-07-28: legacy change has no official source metadata
+- n100-ticker-changes-2025.yaml 2025-10-30: legacy change has no official source metadata
+- n100-ticker-changes-2025.yaml 2025-11-06: legacy change has no official source metadata
+- n100-ticker-changes-2025.yaml 2025-12-22: legacy change has no official source metadata
+- n100-ticker-changes-2026.yaml 2026-01-05: legacy change has no official source metadata
+- n100-ticker-changes-2026.yaml 2026-01-09: legacy change has no official source metadata
+- n100-ticker-changes-2026.yaml 2026-01-20: legacy change has no official source metadata
+- n100-ticker-changes-2026.yaml 2026-04-20: legacy change has no official source metadata
