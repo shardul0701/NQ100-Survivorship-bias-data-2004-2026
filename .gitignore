@@ -4,3 +4,5 @@ __pycache__/
 .venv/
 .DS_Store
 *.csv
+audit/raw_sources/
+audit/*_update_plan.json

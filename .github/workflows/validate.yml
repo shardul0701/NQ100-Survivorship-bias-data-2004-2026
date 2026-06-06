@@ -13,5 +13,7 @@ jobs:
         with:
           python-version: '3.11'
       - run: pip install -r requirements.txt
+      - run: python -m pytest -q
+      - run: python scripts/validate_membership.py --index nq100
       - run: python scripts/validate_yaml.py
       - run: python scripts/audit_membership.py
