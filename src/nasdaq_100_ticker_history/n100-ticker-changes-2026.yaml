@@ -1,4 +1,3 @@
----
 year: 2026
 tickers_on_Jan_1:
   - AAPL
@@ -120,3 +119,9 @@ changes:
       - TEAM
     union:
       - SNDK
+    source_url: 
+      https://ir.nasdaq.com/news-releases/news-release-details/sandisk-corporation-join-nasdaq-100-indexr-beginning-april-20
+    source_title: Sandisk Corporation to Join the Nasdaq-100 Index® Beginning April 20, 2026 | 
+      Nasdaq, Inc.
+    announcement_date: '2026-04-10'
+    confidence_score: 0.98
