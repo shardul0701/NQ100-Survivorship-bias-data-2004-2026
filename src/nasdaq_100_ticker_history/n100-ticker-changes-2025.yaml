@@ -75,7 +75,7 @@ tickers_on_Jan_1:
   - NVDA
   - NXPI
   - ODFL
-  - ON
+  - 'ON'
   - ORLY
   - PANW
   - PAYX
@@ -130,7 +130,7 @@ changes:
       - CDW
       - GFS
       - LULU
-      - ON
+      - 'ON'
       - TTD
     union:
       - ALNY
