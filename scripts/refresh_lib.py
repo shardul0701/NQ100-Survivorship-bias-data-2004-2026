@@ -65,6 +65,8 @@ INDEX_PROFILES = {
         "glob": "n100-ticker-changes-*.yaml",
         "min_members": 95,
         "max_members": 110,
+        # 120 observed gaps between real membership changes, max 364 days
+        "quiet_period_days": 400,
         "candidate_file": AUDIT_DIR / "nq100_official_candidates.csv",
         "official_domains": {
             "nasdaq.com",
@@ -79,6 +81,8 @@ INDEX_PROFILES = {
         "data_dir": ROOT / "src" / "sp500_ticker_history",
         "filename": "sp500-ticker-changes-{year}.yaml",
         "glob": "sp500-ticker-changes-*.yaml",
+        # 481 observed gaps between real membership changes, max 99 days
+        "quiet_period_days": 120,
         "min_members": 450,
         "max_members": 560,
         "candidate_file": AUDIT_DIR / "sp500_official_candidates.csv",
@@ -677,6 +681,13 @@ def fetch_official_candidates(index: str) -> list[dict[str, str]]:
     ]
     session = request_session()
     discovered: dict[str, str] = {}
+    # Which of those came from the CRAWLER rather than from seed_urls. For this
+    # repository's entire life that number was zero and nothing said so: the
+    # title pattern was matched against anchor text that on the Nasdaq IR
+    # archive is always the literal string "HTML", so discovery could never
+    # return a link, and "candidate_urls: 2" was just the two seeds wearing the
+    # appearance of a search. Counting yield is what makes that visible.
+    crawled: set[str] = set()
     fetch_errors: list[str] = []
     successful_fetches = 0
     for source in sources:
@@ -723,6 +734,7 @@ def fetch_official_candidates(index: str) -> list[dict[str, str]]:
                     for link, title in discover_links(index, response.content, url):
                         if official_url(link, prof["official_domains"]):
                             discovered[link] = title
+                            crawled.add(link)
                 else:
                     discovered[url] = fallback_title
                 _ = raw
@@ -777,6 +789,8 @@ def fetch_official_candidates(index: str) -> list[dict[str, str]]:
         "fetched_at": iso_now(),
         "sources_attempted": len(sources),
         "candidate_urls": len(discovered),
+        "discovery_sources": sum(1 for src in sources if src.get("discovery", False)),
+        "crawled_urls": len(crawled),
         "parsed_candidates": len(rows),
         "manual_review_items": len(manual_rows),
         "errors": fetch_errors,
@@ -1140,9 +1154,9 @@ def latest_yaml_change(index: str) -> str:
     return latest
 
 
-# Above p95 (188) of the 120 observed gaps between consecutive NDX membership
-# changes and below the observed maximum (364) -- see check_freshness.
-QUIET_PERIOD_DAYS = 200
+# Fallback only; each index carries its own, set above the longest gap it has
+# ever actually produced -- see check_freshness.
+QUIET_PERIOD_DAYS_DEFAULT = 120
 
 
 def check_freshness(index: str) -> dict:
@@ -1166,27 +1180,36 @@ def check_freshness(index: str) -> dict:
     # a threshold drawn from the distribution rather than guessed: 200 days sits
     # above p95 and below the observed maximum, so it means "longer than the
     # index has ever plausibly gone" instead of "it is Tuesday".
+    quiet_days = int(prof.get("quiet_period_days", QUIET_PERIOD_DAYS_DEFAULT))
     quiet_after = (
-        trusted.fromordinal(trusted.toordinal() + QUIET_PERIOD_DAYS)
-        if trusted
-        else None
+        trusted.fromordinal(trusted.toordinal() + quiet_days) if trusted else None
     )
     warnings, notes = [], []
     if not trusted:
         warnings.append("no dated membership changes found")
     elif date.today() > quiet_after:
         warnings.append(
-            f"no membership change in over {QUIET_PERIOD_DAYS} days "
-            f"({latest_change}) -- longer than any gap on record; verify "
-            f"discovery is still reaching the official source"
+            f"no membership change in over {quiet_days} days ({latest_change}) "
+            f"-- longer than any gap on record; verify discovery is still "
+            f"reaching the official source"
         )
     elif trusted.fromordinal(trusted.toordinal() + 30) < date.today():
         notes.append(
             f"latest membership change is {(date.today() - trusted).days} days "
-            f"old ({latest_change}); normal for this index (median gap 46 days)"
+            f"old ({latest_change}); within this index's normal cadence"
         )
     if not fetch_state.get("successful"):
         warnings.append("no recent successful official-source fetch")
+    # This is the alarm that was missing, and its absence is why the two 2026
+    # changes went unnoticed. A blind crawler raises no error: every fetch
+    # succeeds, every parse succeeds, and the only candidates are the hardcoded
+    # seeds -- indistinguishable, in every report emitted here, from "nothing
+    # was announced". Counting the crawler's own yield is what reveals it.
+    if fetch_state.get("discovery_sources", 0) and not fetch_state.get("crawled_urls", 0):
+        warnings.append(
+            "discovery found no URLs beyond the hardcoded seed_urls -- the "
+            "crawler is probably not matching the archive's markup"
+        )
     result = {
         "index_name": prof["index_name"],
         "latest_yaml_year": max(
