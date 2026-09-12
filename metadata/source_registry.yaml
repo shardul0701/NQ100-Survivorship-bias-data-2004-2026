@@ -11,6 +11,13 @@ sources:
     enabled: true
     discovery: true
     notes: Official Nasdaq press-release archive; discovery is title-filtered for NDX changes.
+    # The archive paginates 10 releases per page -- about six weeks at Nasdaq's
+    # publishing cadence. Page 0 alone is a shorter lookback than the refresh
+    # interval, which is how the June 2026 quarterly rebalance and the July 2026
+    # SPCX addition were both missed: by the time anyone looked, they had already
+    # fallen off page 0. Nine pages is roughly a year of releases. The ?year=
+    # filter 503s, so ?page=N is the only working pager.
+    discovery_pages: 9
     seed_urls:
       - https://ir.nasdaq.com/news-releases/news-release-details/annual-changes-nasdaq-100-indexr-2
       - https://ir.nasdaq.com/news-releases/news-release-details/sandisk-corporation-join-nasdaq-100-indexr-beginning-april-20

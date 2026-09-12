@@ -257,6 +257,47 @@ def discover_links(index: str, html: bytes, base_url: str) -> list[tuple[str, st
         href = urljoin(base_url, anchor["href"])
         if title and title_pattern.search(title):
             found[href] = title
+
+    # The anchor scan above assumes the headline and the link are the same
+    # element. On the Nasdaq IR archive they are not: each release is a table
+    # row whose Title cell holds the headline in an anchor with NO href, and
+    # whose View cell holds the real link -- whose anchor text is the literal
+    # string "HTML". So every href-bearing anchor on that page is titled
+    # "HTML", the pattern can never match one, and discovery returned zero
+    # links on every run since this repo was created. That is not "no changes
+    # were announced": it is a crawler that cannot see any. It is why the
+    # June 2026 quarterly rebalance and the July 2026 SPCX addition were both
+    # missed, and why the only candidates this fetcher ever produced were the
+    # two hardcoded seed_urls.
+    #
+    # Pair the two per row instead: take the headline from whichever anchor
+    # (or cell) in the row matches, and the link from the row's first
+    # non-PDF href.
+    for row in soup.find_all("tr"):
+        cells = row.find_all(["td", "th"])
+        if len(cells) < 2:
+            continue
+        titles = [
+            " ".join(node.get_text(" ", strip=True).split())
+            for node in row.find_all("a")
+        ]
+        matched = [t for t in titles if t and title_pattern.search(t)]
+        if not matched:
+            matched = [
+                t
+                for cell in cells
+                if (t := " ".join(cell.get_text(" ", strip=True).split()))
+                and title_pattern.search(t)
+            ]
+        if not matched:
+            continue
+        label = max(matched, key=len)
+        for anchor in row.find_all("a", href=True):
+            href = urljoin(base_url, anchor["href"])
+            if href.lower().endswith(".pdf") or "/pdf" in href.lower():
+                continue
+            found.setdefault(href, label)
+            break
     return sorted(found.items())
 
 
@@ -351,7 +392,16 @@ def parse_nq100(
         text,
         r"(?:following\s+\w+\s+companies\s+will\s+be\s+added|"
         r"companies\s+will\s+be\s+added|will\s+be\s+added\s+to\s+the\s+Index)\s*:?",
-        r"(?:As a result|The Nasdaq-100 Index|Information|About Nasdaq)",
+        # The removal sentence has to terminate the added section. Without it
+        # the non-greedy body ran past the adds, through "The following five
+        # companies will be removed from the Index: ...", and stopped only at
+        # "For additional information" -- so the June 2026 quarterly rebalance
+        # parsed as ten additions and five removals, five of them the same
+        # ticker on both sides. That tripped the overlap guard and sent a
+        # perfectly well-formed announcement to manual review.
+        r"(?:following\s+\w+\s+companies\s+will\s+be\s+removed|"
+        r"companies\s+will\s+be\s+removed|will\s+be\s+removed\s+from\s+the\s+Index|"
+        r"As a result|The Nasdaq-100 Index|Information|About Nasdaq)",
     )
     removed = _tickers_in_section(
         text,
@@ -374,6 +424,36 @@ def parse_nq100(
         if after_tickers:
             removed.append(after_tickers[0])
 
+    # The pattern above needs the addition and the replacement inside ONE
+    # sentence, because [^.] cannot cross a full stop. Nasdaq splits them:
+    # "Walmart Inc. (Nasdaq: WMT), will become a component ... . Walmart Inc.
+    # will replace AstraZeneca PLC (Nasdaq: AZN) in the Nasdaq-100 Index."
+    # Neither half matched, so that announcement yielded no tickers at all.
+    # Read the two halves independently instead.
+    for match in re.finditer(
+        r"(?P<before>[^.]{0,300})\breplac(?:es|ed|ing|e)\b(?P<after>[^.]{0,300})",
+        text,
+        re.IGNORECASE,
+    ):
+        before_tickers = EXCHANGE_TICKER_PATTERN.findall(match.group("before"))
+        after_tickers = EXCHANGE_TICKER_PATTERN.findall(match.group("after"))
+        if before_tickers:
+            added.append(before_tickers[-1])
+        if after_tickers:
+            removed.append(after_tickers[0])
+
+    for match in re.finditer(
+        r"(?P<before>[^.]{0,300})\bwill\s+become\s+(?:an?\s+)?"
+        r"(?:component|constituent)",
+        text,
+        re.IGNORECASE,
+    ):
+        before_tickers = EXCHANGE_TICKER_PATTERN.findall(match.group("before"))
+        if before_tickers:
+            # the LAST exchange ticker before the verb is the subject; the
+            # earlier ones are the boilerplate "Nasdaq (Nasdaq: NDAQ)" lead-in
+            added.append(before_tickers[-1])
+
     normalized_add = sorted(
         {value for raw in added if (value := normalize_ticker(raw, aliases))}
     )
@@ -389,6 +469,23 @@ def parse_nq100(
         reasons.append("no confident add/remove tickers")
     if overlap:
         reasons.append(f"same ticker added and removed: {','.join(overlap)}")
+
+    # An addition with no named removal is a REAL event -- Nasdaq's fast-entry
+    # rule lets the index run above 100 names, which is how SPCX joined on
+    # 2026-07-07 without anything leaving. But "we found no removal" and "the
+    # release named a removal we failed to parse" are indistinguishable from
+    # the ticker lists alone, and the second one silently corrupts membership
+    # from that date forward. Separate them on the prose: if the body talks
+    # about replacing, removing or deleting and we still extracted nobody,
+    # that is a parse failure, not a fast entry.
+    body = re.split(r"About Nasdaq Global Indexes", text, maxsplit=1)[0]
+    if normalized_add and not normalized_remove and re.search(
+        r"\breplac|\bremov|\bdelet", body, re.IGNORECASE
+    ):
+        reasons.append(
+            "addition with no parsed removal, but the release mentions "
+            "replacement/removal"
+        )
     confidence = 0.98 if not reasons and normalized_add and normalized_remove else 0.92 if not reasons else 0.40
     return [
         ParsedChange(
@@ -590,6 +687,26 @@ def fetch_official_candidates(index: str) -> list[dict[str, str]]:
                 source.get("discovery", False),
             )
         ]
+        # A discovery page shows only its most recent slice -- the Nasdaq IR
+        # archive shows 10 releases, which at Nasdaq's publishing cadence is
+        # about six weeks. Both 2026 membership announcements this repo was
+        # missing sat on page 1, one page past the only page ever fetched, so
+        # even a working title filter would not have found them. Walk the
+        # pager so the lookback comfortably exceeds the refresh interval.
+        if source.get("discovery", False):
+            param = source.get("discovery_page_param", "page")
+            first = int(source.get("discovery_first_page", 0))
+            pages = int(source.get("discovery_pages", 1))
+            base = source["source_url"]
+            sep = "&" if "?" in base else "?"
+            for page in range(first + 1, first + pages):
+                urls.append(
+                    (
+                        f"{base}{sep}{param}={page}",
+                        source.get("source_name", base) + f" (page {page})",
+                        True,
+                    )
+                )
         urls.extend(
             (url, source.get("source_name", url), False)
             for url in source.get("seed_urls", [])
@@ -1023,18 +1140,51 @@ def latest_yaml_change(index: str) -> str:
     return latest
 
 
+# Above p95 (188) of the 120 observed gaps between consecutive NDX membership
+# changes and below the observed maximum (364) -- see check_freshness.
+QUIET_PERIOD_DAYS = 200
+
+
 def check_freshness(index: str) -> dict:
     prof = profile(index)
     fetch_state_path = METADATA_DIR / f"{index}_fetch_state.json"
     fetch_state = json.loads(fetch_state_path.read_text(encoding="utf-8")) if fetch_state_path.exists() else {}
     latest_change = latest_yaml_change(index)
     trusted = date.fromisoformat(latest_change) if latest_change else None
-    stale_after = trusted.fromordinal(trusted.toordinal() + 30) if trusted else None
-    warnings = []
+    # The age of the newest MEMBERSHIP CHANGE is a property of the index, not of
+    # this repository. The old threshold was 30 days, and measured against this
+    # repo's own 121 change dates (2004-2026) 68% of the gaps between real
+    # consecutive changes exceed it -- median 46 days, p95 188, max 364. So the
+    # alarm fired on the ordinary case: a fully current repo spent most of its
+    # life labelled "stale_or_incomplete", which is exactly the signal a
+    # consumer uses to decide whether to trust the data. An alarm that is
+    # usually wrong gets ignored, and then the one time it is right nobody
+    # looks.
+    #
+    # Freshness is whether WE CHECKED, and that is the fetch-state test below.
+    # A long quiet stretch is kept as a separate, genuinely rare observation at
+    # a threshold drawn from the distribution rather than guessed: 200 days sits
+    # above p95 and below the observed maximum, so it means "longer than the
+    # index has ever plausibly gone" instead of "it is Tuesday".
+    quiet_after = (
+        trusted.fromordinal(trusted.toordinal() + QUIET_PERIOD_DAYS)
+        if trusted
+        else None
+    )
+    warnings, notes = [], []
     if not trusted:
         warnings.append("no dated membership changes found")
-    elif date.today() > stale_after:
-        warnings.append(f"latest trusted change is more than 30 days old ({latest_change})")
+    elif date.today() > quiet_after:
+        warnings.append(
+            f"no membership change in over {QUIET_PERIOD_DAYS} days "
+            f"({latest_change}) -- longer than any gap on record; verify "
+            f"discovery is still reaching the official source"
+        )
+    elif trusted.fromordinal(trusted.toordinal() + 30) < date.today():
+        notes.append(
+            f"latest membership change is {(date.today() - trusted).days} days "
+            f"old ({latest_change}); normal for this index (median gap 46 days)"
+        )
     if not fetch_state.get("successful"):
         warnings.append("no recent successful official-source fetch")
     result = {
@@ -1047,9 +1197,10 @@ def check_freshness(index: str) -> dict:
         "latest_official_source_checked": fetch_state.get("fetched_at"),
         "latest_successful_fetch": fetch_state.get("fetched_at") if fetch_state.get("successful") else None,
         "latest_trusted_date": latest_change or None,
-        "stale_after_date": stale_after.isoformat() if stale_after else None,
+        "stale_after_date": quiet_after.isoformat() if quiet_after else None,
         "confidence_level": "high" if not warnings else "stale_or_incomplete",
         "warnings": warnings,
+        "notes": notes,
     }
     METADATA_DIR.mkdir(parents=True, exist_ok=True)
     (METADATA_DIR / "data_freshness.json").write_text(

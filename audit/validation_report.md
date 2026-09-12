@@ -1,10 +1,10 @@
 # Membership Validation Report
 
 - Index: Nasdaq-100
-- Generated: 2026-09-12T14:39:19+00:00
+- Generated: 2026-09-12T15:04:30+00:00
 - YAML files: 23
 - Errors: 0
-- Warnings: 118
+- Warnings: 117
 
 ## Errors
 
@@ -129,4 +129,3 @@
 - n100-ticker-changes-2025.yaml 2025-12-22: legacy change has no official source metadata
 - n100-ticker-changes-2026.yaml 2026-01-05: legacy change has no official source metadata
 - n100-ticker-changes-2026.yaml 2026-01-09: legacy change has no official source metadata
-- n100-ticker-changes-2026.yaml 2026-01-20: legacy change has no official source metadata

@@ -114,6 +114,12 @@ changes:
       - AZN
     union:
       - WMT
+    source_url: 
+      https://ir.nasdaq.com/news-releases/news-release-details/walmart-inc-join-nasdaq-100-indexr-beginning-january-20th-2026
+    source_title: Walmart Inc. to Join the Nasdaq-100 Index® Beginning January 20th, 2026 | Nasdaq, 
+      Inc.
+    announcement_date: '2026-01-09'
+    confidence_score: 0.98
   "2026-04-20":
     difference:
       - TEAM
@@ -125,3 +131,30 @@ changes:
       Nasdaq, Inc.
     announcement_date: '2026-04-10'
     confidence_score: 0.98
+  '2026-06-22':
+    difference:
+      - CHTR
+      - CTSH
+      - INSM
+      - VRSK
+      - ZS
+    union:
+      - ALAB
+      - CRWV
+      - NBIS
+      - RKLB
+      - TER
+    source_url: 
+      https://ir.nasdaq.com/news-releases/news-release-details/nasdaq-100-indexr-june-2026-quarterly-changes
+    source_title: Nasdaq-100 Index® June 2026 Quarterly Changes | Nasdaq, Inc.
+    announcement_date: '2026-06-11'
+    confidence_score: 0.98
+  '2026-07-07':
+    union:
+      - SPCX
+    source_url: 
+      https://ir.nasdaq.com/news-releases/news-release-details/space-exploration-technologies-corporation-join-nasdaq-100
+    source_title: Space Exploration Technologies Corporation to Join the Nasdaq-100 Index® Beginning
+      July 7, 2026 | Nasdaq, Inc.
+    announcement_date: '2026-06-26'
+    confidence_score: 0.92
