@@ -298,3 +298,15 @@ def test_recorded_and_acknowledged_releases_are_not_outstanding(tmp_path, monkey
         R.MANUAL_FIELDS,
     )
     assert [r["source_url"] for r in A.outstanding("nq100")] == ["https://ir.nasdaq.com/new"]
+
+
+def test_written_tickers_survive_a_yaml_1_1_reader(tmp_path, monkeypatch):
+    # ON Semiconductor: PyYAML reads a bare ON as True.
+    profiles = {k: dict(v) for k, v in R.INDEX_PROFILES.items()}
+    profiles["nq100"]["data_dir"] = tmp_path
+    monkeypatch.setattr(R, "INDEX_PROFILES", profiles)
+    (tmp_path / "n100-ticker-changes-2026.yaml").write_text(
+        'year: 2026\ntickers_on_Jan_1: [AAPL, "ON", "NO"]\nchanges: {}\n', encoding="utf-8"
+    )
+    path = R.rollover_year("nq100", date(2027, 1, 1))
+    assert yaml.safe_load(path.read_text(encoding="utf-8"))["tickers_on_Jan_1"] == ["AAPL", "NO", "ON"]

@@ -28,6 +28,7 @@ from bs4 import BeautifulSoup
 from dateutil import parser as date_parser
 from pypdf import PdfReader
 from ruamel.yaml import YAML
+from ruamel.yaml.scalarstring import DoubleQuotedScalarString
 
 try:
     import truststore
@@ -839,6 +840,21 @@ def yaml_rt() -> YAML:
     return parser
 
 
+# ruamel writes YAML 1.2, where ON is a plain string, so it emits ON unquoted.
+# Every consumer of these files (july-backtester, data_gate, live_check) reads
+# them with PyYAML, which is YAML 1.1: bare ON/YES/NO/OFF/TRUE/FALSE load as
+# booleans and NULL/~ as None. ON Semiconductor is a real NDX ticker, and a bare
+# ON already turned into True on main once (PR #3). Quote any such word.
+_YAML11_NON_STRINGS = {"y", "yes", "n", "no", "on", "off", "true", "false", "null", "~"}
+
+
+def yaml_tickers(tickers) -> list:
+    return [
+        DoubleQuotedScalarString(t) if str(t).lower() in _YAML11_NON_STRINGS else t
+        for t in tickers
+    ]
+
+
 def yaml_path(index: str, year: int) -> Path:
     prof = profile(index)
     return prof["data_dir"] / prof["filename"].format(year=year)
@@ -880,7 +896,7 @@ def rollover_year(index: str, today: date | None = None) -> Path | None:
         raise FileNotFoundError(f"cannot roll over to {today.year}: no {today.year - 1} file")
     data = {
         "year": today.year,
-        "tickers_on_Jan_1": sorted(final_membership(previous)),
+        "tickers_on_Jan_1": yaml_tickers(sorted(final_membership(previous))),
         "changes": {},
     }
     with path.open("w", encoding="utf-8", newline="\n") as handle:
@@ -989,9 +1005,9 @@ def apply_candidates(
             continue
         entry = {}
         if desired_removed:
-            entry["difference"] = desired_removed
+            entry["difference"] = yaml_tickers(desired_removed)
         if desired_added:
-            entry["union"] = desired_added
+            entry["union"] = yaml_tickers(desired_added)
         entry["source_url"] = candidate["source_url"]
         entry["source_title"] = candidate["source_title"]
         entry["announcement_date"] = candidate["announcement_date"]
