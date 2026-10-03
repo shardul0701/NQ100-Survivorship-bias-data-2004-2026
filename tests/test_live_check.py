@@ -147,6 +147,25 @@ def test_rollover_seeds_the_new_year_from_last_years_final_membership(tmp_path, 
     assert R.rollover_year("nq100", date(2027, 1, 2)) is None
 
 
+def test_pending_is_cleared_once_the_effective_date_arrives(tmp_path, monkeypatch):
+    profiles = {k: dict(v) for k, v in R.INDEX_PROFILES.items()}
+    profiles["nq100"]["data_dir"] = tmp_path
+    monkeypatch.setattr(R, "INDEX_PROFILES", profiles)
+    path = tmp_path / "n100-ticker-changes-2026.yaml"
+    path.write_text(
+        "year: 2026\ntickers_on_Jan_1: [AAA, BBB]\nchanges:\n"
+        '  "2026-09-21":\n    difference: [BBB]\n    union: [CCC]\n    pending: true\n'
+        '  "2026-10-09":\n    difference: [AAA]\n    union: [DDD]\n    pending: true\n',
+        encoding="utf-8",
+    )
+    assert R.expire_elapsed_pending("nq100", date(2026, 10, 3)) == ["2026-09-21"]
+    changes = yaml.safe_load(path.read_text(encoding="utf-8"))["changes"]
+    assert "pending" not in changes["2026-09-21"]
+    assert changes["2026-09-21"]["union"] == ["CCC"]
+    assert changes["2026-10-09"]["pending"] is True
+    assert R.expire_elapsed_pending("nq100", date(2026, 10, 3)) == []
+
+
 # --------------------------------------------------------------------------- #
 # GitHub alerts, against an in-memory fake of the issues API
 # --------------------------------------------------------------------------- #

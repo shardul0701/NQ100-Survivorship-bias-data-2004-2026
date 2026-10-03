@@ -122,16 +122,21 @@ clears. Every write is read back and compared; a body that does not round-trip i
 
 Acknowledge a release only when it is not a membership change, and give the reason.
 
-## Year rollover
+## Year-file housekeeping
 
-`tickers_as_of` needs a file for the year it is asked about. `scripts/rollover_year.py` creates
-the current year's file from the previous year's final membership with empty `changes` on the
-first run of a new year, and does nothing otherwise.
+`scripts/rollover_year.py` runs before every refresh and does two things:
+
+- `tickers_as_of` needs a file for the year it is asked about. On the first run of a new year
+  it creates that year's file from the previous year's final membership with empty `changes`,
+  and does nothing otherwise.
+- A change applied before its effective date is marked `pending: true`. Once the date arrives
+  the flag is removed; nothing used to remove it, so past changes kept claiming to be future
+  ones.
 
 ## GitHub Actions review flow
 
-`.github/workflows/refresh_membership.yml` runs every weekday and on demand. It rolls the year
-over if needed, fetches, plans, applies only high-confidence candidates, validates, runs the
+`.github/workflows/refresh_membership.yml` runs every weekday and on demand. It runs the
+year-file housekeeping, fetches, plans, applies only high-confidence candidates, validates, runs the
 live check and the manual-review alert, checks freshness, and uploads audit artifacts.
 Derived metadata and audit reports are committed straight to `main`. A membership change goes
 through a pull request, which the run merges itself unless a manual-review release is still

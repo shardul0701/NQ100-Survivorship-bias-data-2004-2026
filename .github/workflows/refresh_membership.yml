@@ -23,7 +23,7 @@ jobs:
         with:
           python-version: "3.11"
       - run: pip install -r requirements.txt
-      - name: Roll over to the current year
+      - name: Year-file housekeeping (rollover, elapsed pending flags)
         run: python scripts/rollover_year.py --index nq100
       - name: Fetch official Nasdaq announcements
         run: python scripts/fetch_official_nq100_announcements.py

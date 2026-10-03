@@ -605,7 +605,9 @@ def parse_sp500(
     dates = effective_dates(text, announcement_date)
     additions: list[str] = []
     removals: list[str] = []
-    for sentence in re.split(r"(?<=[.!?])\s+", text):
+    # Same abbreviation trap as parse_nq100: "Reddit Inc. (NYSE: RDDT)" would
+    # otherwise end the sentence at "Inc." and separate the pair.
+    for sentence in re.split(r"(?<=[.!?])\s+", mask_abbreviation_periods(text)):
         if "S&P 500" not in sentence:
             continue
         tickers = EXCHANGE_TICKER_PATTERN.findall(sentence)
@@ -882,8 +884,8 @@ def rollover_year(index: str, today: date | None = None) -> Path | None:
     """Create this year's file, seeded from last year's final membership.
 
     A year file used to appear only when that year's first change was applied.
-    The Nasdaq-100 reconstitutes in December, so a new year can run for months
-    with no change -- and every consumer that resolves membership by year
+    A quiet January (the Nasdaq-100 can go months without a change) leaves the
+    year with no file at all -- and every consumer that resolves membership by year
     (july-backtester's tickers_as_of, data_gate) fails closed on the missing
     file from January 1. Returns the path written, or None if nothing to do.
     """
@@ -902,6 +904,37 @@ def rollover_year(index: str, today: date | None = None) -> Path | None:
     with path.open("w", encoding="utf-8", newline="\n") as handle:
         yaml_rt().dump(data, handle)
     return path
+
+
+def expire_elapsed_pending(index: str, today: date | None = None) -> list[str]:
+    """Drop ``pending`` from changes whose effective date has arrived.
+
+    apply_candidates marks a future change pending, and nothing ever cleared
+    the flag once the date passed -- the S&P 500 2026-06-22 and 2026-09-21
+    changes still carried it weeks later. No consumer filters on it today, but
+    one that skipped pending entries would silently drop real membership
+    changes. Checks last year too, for a late-December change seen after
+    rollover. Returns the dates cleared.
+    """
+    today = today or date.today()
+    cleared: list[str] = []
+    for year in (today.year - 1, today.year):
+        data = load_year(index, year)
+        if data is None:
+            continue
+        due = [
+            key
+            for key, entry in (data.get("changes") or {}).items()
+            if (entry or {}).get("pending") and date.fromisoformat(str(key)) <= today
+        ]
+        if not due:
+            continue
+        for key in due:
+            del data["changes"][key]["pending"]
+        with yaml_path(index, year).open("w", encoding="utf-8", newline="\n") as handle:
+            yaml_rt().dump(data, handle)
+        cleared.extend(str(key) for key in due)
+    return cleared
 
 
 def candidate_changes(index: str, threshold: float = 0.90) -> list[dict]:
@@ -967,7 +1000,7 @@ def apply_candidates(
                 continue
             data = {
                 "year": effective.year,
-                "tickers_on_Jan_1": sorted(final_membership(previous)),
+                "tickers_on_Jan_1": yaml_tickers(sorted(final_membership(previous))),
                 "changes": {},
             }
         touched[effective.year] = data
