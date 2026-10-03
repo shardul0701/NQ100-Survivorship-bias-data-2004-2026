@@ -1,0 +1,11 @@
+# Official releases the crawler flagged for manual review that a human has
+# looked at and decided are NOT a membership change to record.
+#
+# scripts/alert_manual_review.py keeps a GitHub issue open while any flagged
+# release is neither recorded in the YAML (by source_url / evidence_url) nor
+# listed here. Add an entry only with a reason; never to silence an alert.
+acknowledged:
+  - source_url: https://ir.nasdaq.com/news-releases/news-release-details/nasdaq-issues-statement-regarding-nasdaq-100r-index-linked
+    reason: 2026-04-06 statement on licensing the index to new ETF issuers; names no constituent
+      change
+    acknowledged_on: "2026-10-03"

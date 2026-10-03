@@ -85,19 +85,21 @@ This checks:
 
 ## Official-source refresh
 
-The repository includes a fail-closed weekly refresh that checks official Nasdaq sources,
-retains raw snapshots and audit reports, and opens a pull request for manual review:
+The repository includes a fail-closed daily (weekday) refresh that checks official Nasdaq
+sources, compares the YAML with Nasdaq's live constituent list, raises GitHub issues when they
+disagree, retains raw snapshots and audit reports, and opens a pull request for manual review:
 
 ```bash
 python scripts/fetch_official_nq100_announcements.py
 python scripts/update_membership_yaml.py --index nq100 --dry-run
 python scripts/validate_membership.py --index nq100
 python scripts/audit_membership_update.py
+python scripts/check_live_constituents.py --index nq100
 python scripts/check_freshness.py --index nq100
 ```
 
 See `MERGE_OR_REFRESH_SPEC.md` for the source registry, confidence rules, correction mode,
-validation behavior, and pull-request workflow.
+validation behavior, the live check, alerts, year rollover, and pull-request workflow.
 
 ## How to get the universe for a date
 

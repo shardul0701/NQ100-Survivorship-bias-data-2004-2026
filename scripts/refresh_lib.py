@@ -104,10 +104,36 @@ SHORT_MONTH_DATE = (
 )
 DATE_PATTERN = re.compile(rf"\b{MONTH_DATE}\b", re.IGNORECASE)
 TICKER_PATTERN = re.compile(r"^[A-Z][A-Z0-9.\-]{0,11}$")
+# Nasdaq's newswire copy is not consistent about spacing inside the exchange
+# parenthetical. The Moderna release (2026-10-01) prints "( Nasdaq : MRNA)" --
+# a space after the bracket -- and the old pattern, which demanded "(Nasdaq",
+# matched nothing in it: no add, no remove, confidence 0.40, manual review, and
+# because a manual-review item changes no YAML the run reported nothing at all.
 EXCHANGE_TICKER_PATTERN = re.compile(
-    r"\((?:Nasdaq|NYSE|NASD|NYSE American)\s*:\s*([A-Z][A-Z0-9.\-/]{0,11})\)",
+    r"\(\s*(?:Nasdaq|NYSE American|NYSE|NASD)\s*:\s*([A-Z][A-Z0-9.\-/]{0,11})\s*\)",
     re.IGNORECASE,
 )
+# Corporate-suffix abbreviations whose full stop is not a sentence end. The
+# sentence-scoped patterns in parse_nq100 use [^.] to stay inside one sentence,
+# so "replacing CoStar Group, Inc. (Nasdaq: CSGP)" ended the match at "Inc."
+# and never reached CSGP -- the Lumentum release (2026-05-08) parsed as an
+# addition with no removal, and the add-without-remove guard sent it to review.
+# Masking those periods before matching keeps the sentence boundary where it
+# actually is.
+_ABBREVIATION_PERIOD = re.compile(
+    r"\b(Inc|Corp|Co|Cos|Ltd|Bros|Plc|PLC|Hldgs|Intl|Mfg|Grp)\.(?=[\s,)(])"
+    r"|\b([A-Z])\.([A-Z])\.(?=[\s,)(])"
+)
+_PERIOD_MASK = "․"  # ONE DOT LEADER: not "." so [^.] passes over it
+
+
+def mask_abbreviation_periods(text: str) -> str:
+    def repl(match: re.Match) -> str:
+        if match.group(1):
+            return match.group(1) + _PERIOD_MASK
+        return f"{match.group(2)}{_PERIOD_MASK}{match.group(3)}{_PERIOD_MASK}"
+
+    return _ABBREVIATION_PERIOD.sub(repl, text)
 
 
 @dataclass
@@ -392,6 +418,7 @@ def parse_nq100(
 ) -> list[ParsedChange]:
     announcement_date = announcement_date_from_html(html, text)
     dates = effective_dates(text, announcement_date)
+    text = mask_abbreviation_periods(text)
     added = _tickers_in_section(
         text,
         r"(?:following\s+\w+\s+companies\s+will\s+be\s+added|"
@@ -835,6 +862,32 @@ def final_membership(data: dict) -> set[str]:
     return members
 
 
+def rollover_year(index: str, today: date | None = None) -> Path | None:
+    """Create this year's file, seeded from last year's final membership.
+
+    A year file used to appear only when that year's first change was applied.
+    The Nasdaq-100 reconstitutes in December, so a new year can run for months
+    with no change -- and every consumer that resolves membership by year
+    (july-backtester's tickers_as_of, data_gate) fails closed on the missing
+    file from January 1. Returns the path written, or None if nothing to do.
+    """
+    today = today or date.today()
+    path = yaml_path(index, today.year)
+    if path.exists():
+        return None
+    previous = load_year(index, today.year - 1)
+    if previous is None:
+        raise FileNotFoundError(f"cannot roll over to {today.year}: no {today.year - 1} file")
+    data = {
+        "year": today.year,
+        "tickers_on_Jan_1": sorted(final_membership(previous)),
+        "changes": {},
+    }
+    with path.open("w", encoding="utf-8", newline="\n") as handle:
+        yaml_rt().dump(data, handle)
+    return path
+
+
 def candidate_changes(index: str, threshold: float = 0.90) -> list[dict]:
     prof = profile(index)
     accepted = []
@@ -873,6 +926,21 @@ def apply_candidates(
     for candidate in changes:
         effective = date.fromisoformat(candidate["effective_date"])
         if effective.year < today.year and not correction_mode:
+            # The archive keeps last December's annual reconstitution in view
+            # for months. Checked only after the year gate, a change ALREADY
+            # recorded exactly was reported as needing a correction on every
+            # run -- a permanent manual-review row, which now raises an issue.
+            prior = (load_year(index, effective.year) or {}).get("changes") or {}
+            recorded = next(
+                (entry for key, entry in prior.items() if str(key) == candidate["effective_date"]),
+                None,
+            ) or {}
+            if recorded and (
+                sorted(recorded.get("difference") or []) == candidate["removed"]
+                and sorted(recorded.get("union") or []) == candidate["added"]
+            ):
+                actions.append({**candidate, "status": "already_present", "reason": "historical change already recorded"})
+                continue
             actions.append({**candidate, "status": "manual_review", "reason": "historical correction flag required"})
             continue
         data = touched.get(effective.year) or load_year(index, effective.year)
@@ -1013,6 +1081,17 @@ def validate_dataset(index: str) -> tuple[list[str], list[str], dict]:
                 if entry.get("source_url"):
                     if not official_url(str(entry["source_url"]), prof["official_domains"]):
                         errors.append(f"{path.name} {effective}: source URL is not official")
+                elif entry.get("evidence_url"):
+                    # Spin-offs, take-privates and exchange transfers are never
+                    # announced as press releases, so they cannot carry an
+                    # official source_url. They are recorded with secondary
+                    # evidence and confirmed by the live-constituent check.
+                    if not entry.get("evidence_note"):
+                        errors.append(f"{path.name} {effective}: evidence_url without evidence_note")
+                    warnings.append(
+                        f"{path.name} {effective}: no official press release; recorded from "
+                        f"secondary evidence ({entry['evidence_url']})"
+                    )
                 else:
                     warnings.append(f"{path.name} {effective}: legacy change has no official source metadata")
         except Exception as exc:
@@ -1158,6 +1237,16 @@ def latest_yaml_change(index: str) -> str:
 # ever actually produced -- see check_freshness.
 QUIET_PERIOD_DAYS_DEFAULT = 120
 
+# The live check runs every weekday; Friday to Monday is 3 days, so 4 means a
+# run was genuinely missed.
+LIVE_CHECK_MAX_AGE_DAYS = 4
+
+
+def needs_live_attention(state: dict) -> bool:
+    from live_check import needs_attention
+
+    return needs_attention(state)
+
 
 def check_freshness(index: str) -> dict:
     prof = profile(index)
@@ -1210,6 +1299,34 @@ def check_freshness(index: str) -> dict:
             "discovery found no URLs beyond the hardcoded seed_urls -- the "
             "crawler is probably not matching the archive's markup"
         )
+    # Every check above measures the CRAWLER, and in 2026 the crawler was
+    # healthy by all of them while five changes went unrecorded: it cannot
+    # report an announcement it never saw, and spin-offs, take-privates and
+    # exchange transfers are never announced at all. The live check compares
+    # names against the provider's current list instead, so it is the one test
+    # here that a blind crawler cannot pass. See scripts/live_check.py.
+    live_state_path = METADATA_DIR / "live_check_state.json"
+    live = json.loads(live_state_path.read_text(encoding="utf-8")) if live_state_path.exists() else {}
+    live_status = live.get("status")
+    if not live:
+        warnings.append("live constituent check has never run (scripts/check_live_constituents.py)")
+    else:
+        checked = datetime.fromisoformat(live["checked_at"])
+        age_days = (datetime.now(timezone.utc) - checked).days
+        official = (live.get("sources") or [{}])[0]
+        if age_days > LIVE_CHECK_MAX_AGE_DAYS:
+            warnings.append(
+                f"live constituent check last ran {age_days} days ago ({live['checked_at']}); "
+                f"the schedule is every weekday"
+            )
+        if live_status == "mismatch":
+            warnings.append(
+                f"YAML disagrees with the official current list: missing "
+                f"{official.get('missing_from_pit') or '-'}, extra {official.get('extra_in_pit') or '-'}"
+            )
+        elif live_status == "source_error":
+            msg = f"official current list unreachable: {official.get('error')}"
+            (warnings if needs_live_attention(live) else notes).append(msg)
     result = {
         "index_name": prof["index_name"],
         "latest_yaml_year": max(
@@ -1221,6 +1338,9 @@ def check_freshness(index: str) -> dict:
         "latest_successful_fetch": fetch_state.get("fetched_at") if fetch_state.get("successful") else None,
         "latest_trusted_date": latest_change or None,
         "stale_after_date": quiet_after.isoformat() if quiet_after else None,
+        "live_check_status": live_status,
+        "latest_live_check": live.get("checked_at"),
+        "latest_live_check_pass": live.get("last_pass_at"),
         "confidence_level": "high" if not warnings else "stale_or_incomplete",
         "warnings": warnings,
         "notes": notes,
