@@ -329,3 +329,56 @@ def test_written_tickers_survive_a_yaml_1_1_reader(tmp_path, monkeypatch):
     )
     path = R.rollover_year("nq100", date(2027, 1, 1))
     assert yaml.safe_load(path.read_text(encoding="utf-8"))["tickers_on_Jan_1"] == ["AAPL", "NO", "ON"]
+
+
+# --------------------------------------------------------------------------- #
+# Same-day entries: a rename recorded alongside an announced change
+# --------------------------------------------------------------------------- #
+def _plan_same_day(tmp_path, monkeypatch, entry_yaml):
+    year = date.today().year
+    profiles = {k: dict(v) for k, v in R.INDEX_PROFILES.items()}
+    profiles["nq100"]["data_dir"] = tmp_path
+    profiles["nq100"]["candidate_file"] = tmp_path / "candidates.csv"
+    monkeypatch.setattr(R, "INDEX_PROFILES", profiles)
+    (tmp_path / f"n100-ticker-changes-{year}.yaml").write_text(
+        f'year: {year}\ntickers_on_Jan_1: [AAA, BBB, EQR]\nchanges:\n  "{year}-01-02":\n' + entry_yaml,
+        encoding="utf-8",
+    )
+    R.write_csv(
+        profiles["nq100"]["candidate_file"],
+        [{
+            "index_name": "Nasdaq-100", "announcement_date": f"{year}-01-01",
+            "effective_date": f"{year}-01-02", "added_tickers": "RDDT", "removed_tickers": "AAA",
+            "source_url": "https://ir.nasdaq.com/x", "source_title": "t",
+            "raw_file_path": "", "confidence_score": "0.98", "parser_notes": "",
+            "manual_review_required": "false",
+        }],
+        R.CANDIDATE_FIELDS,
+    )
+    [action] = R.apply_candidates("nq100", apply=False)
+    return action
+
+
+def test_a_same_day_entry_that_matches_exactly_is_already_present(tmp_path, monkeypatch):
+    action = _plan_same_day(
+        tmp_path, monkeypatch, "    difference: [AAA]\n    union: [RDDT]\n    source_url: https://ir.nasdaq.com/x\n"
+    )
+    assert action["status"] == "already_present"
+
+
+def test_a_same_day_rename_backed_by_evidence_does_not_contradict_the_release(tmp_path, monkeypatch):
+    action = _plan_same_day(
+        tmp_path,
+        monkeypatch,
+        "    difference: [AAA, EQR]\n    union: [RDDT, VMRK]\n    source_url: https://ir.nasdaq.com/x\n"
+        "    evidence_url: https://www.sec.gov/x\n    evidence_note: EQR renamed VMRK the same day\n",
+    )
+    assert action["status"] == "already_present"
+
+
+def test_unexplained_extra_tickers_on_the_same_day_still_contradict(tmp_path, monkeypatch):
+    action = _plan_same_day(
+        tmp_path, monkeypatch, "    difference: [AAA, EQR]\n    union: [RDDT, VMRK]\n    source_url: https://ir.nasdaq.com/x\n"
+    )
+    assert action["status"] == "manual_review"
+    assert action["reason"] == "contradicts existing same-day change"

@@ -937,6 +937,25 @@ def expire_elapsed_pending(index: str, today: date | None = None) -> list[str]:
     return cleared
 
 
+def entry_covers(entry: dict, removed: list[str], added: list[str]) -> bool:
+    """True if a recorded entry already reflects a candidate's changes.
+
+    Exact equality, or -- only when the entry carries evidence_url -- a
+    superset. A ticker rename effective the same day as an announced change
+    shares its date key, and the release covers only its own half: on
+    2026-08-18 the S&P release says AVB -> RDDT, while EQR -> VMRK (a rename,
+    never announced by S&P) is recorded in the same entry with evidence. An
+    exact-match test reported that release as a contradiction on every run.
+    Without evidence the extra tickers are unexplained, so a superset still
+    goes to manual review.
+    """
+    old_removed = set(entry.get("difference") or [])
+    old_added = set(entry.get("union") or [])
+    if old_removed == set(removed) and old_added == set(added):
+        return True
+    return bool(entry.get("evidence_url")) and set(removed) <= old_removed and set(added) <= old_added
+
+
 def candidate_changes(index: str, threshold: float = 0.90) -> list[dict]:
     prof = profile(index)
     accepted = []
@@ -984,10 +1003,7 @@ def apply_candidates(
                 (entry for key, entry in prior.items() if str(key) == candidate["effective_date"]),
                 None,
             ) or {}
-            if recorded and (
-                sorted(recorded.get("difference") or []) == candidate["removed"]
-                and sorted(recorded.get("union") or []) == candidate["added"]
-            ):
+            if recorded and entry_covers(recorded, candidate["removed"], candidate["added"]):
                 actions.append({**candidate, "status": "already_present", "reason": "historical change already recorded"})
                 continue
             actions.append({**candidate, "status": "manual_review", "reason": "historical correction flag required"})
@@ -1010,9 +1026,7 @@ def apply_candidates(
         desired_removed = candidate["removed"]
         desired_added = candidate["added"]
         if existing:
-            old_removed = sorted(existing.get("difference") or [])
-            old_added = sorted(existing.get("union") or [])
-            if old_removed != desired_removed or old_added != desired_added:
+            if not entry_covers(existing, desired_removed, desired_added):
                 actions.append({**candidate, "status": "manual_review", "reason": "contradicts existing same-day change"})
                 continue
             status = "source_metadata_added" if not existing.get("source_url") else "already_present"
