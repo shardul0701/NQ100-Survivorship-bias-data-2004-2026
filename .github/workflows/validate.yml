@@ -17,3 +17,9 @@ jobs:
       - run: python scripts/validate_membership.py --index nq100
       - run: python scripts/validate_yaml.py
       - run: python scripts/audit_membership.py
+      # Informational on pushes and PRs: shows whether this YAML agrees with
+      # Nasdaq's current constituent list. It does not gate here -- a change
+      # announced but not yet entered would otherwise fail every unrelated push.
+      # The scheduled refresh workflow is the one that gates and raises issues.
+      - name: Live constituent check (informational)
+        run: python scripts/check_live_constituents.py --index nq100
