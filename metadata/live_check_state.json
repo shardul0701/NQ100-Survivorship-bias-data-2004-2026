@@ -1,0 +1,44 @@
+{
+  "index_name": "Nasdaq-100",
+  "checked_at": "2026-10-03T22:56:08+00:00",
+  "status": "pass",
+  "pit_count_today": 101,
+  "official_source": "nasdaq_api",
+  "sources": [
+    {
+      "name": "nasdaq_api",
+      "url": "https://api.nasdaq.com/api/quote/list-type/nasdaq100",
+      "role": "official",
+      "reachable": true,
+      "as_of": "2026-10-01",
+      "count": 101,
+      "error": null,
+      "missing_from_pit": [],
+      "extra_in_pit": [],
+      "window": [
+        "2026-09-30",
+        "2026-10-01",
+        "2026-10-02",
+        "2026-10-05"
+      ]
+    },
+    {
+      "name": "upstream_n100tickers",
+      "url": "https://raw.githubusercontent.com/jmccarrell/n100tickers/main/src/nasdaq_100_ticker_history/n100-ticker-changes-2026.yaml",
+      "role": "advisory",
+      "reachable": true,
+      "as_of": "2026-10-03",
+      "count": 101,
+      "error": null,
+      "missing_from_pit": [],
+      "extra_in_pit": [],
+      "window": [
+        "2026-10-02",
+        "2026-10-03",
+        "2026-10-05",
+        "2026-10-06"
+      ]
+    }
+  ],
+  "last_pass_at": "2026-10-03T22:56:08+00:00"
+}

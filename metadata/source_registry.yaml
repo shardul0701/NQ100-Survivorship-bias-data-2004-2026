@@ -18,9 +18,14 @@ sources:
     # fallen off page 0. Nine pages is roughly a year of releases. The ?year=
     # filter 503s, so ?page=N is the only working pager.
     discovery_pages: 9
+    # Seeds are releases the archive pager does not list. Lumentum (May 2026)
+    # is absent from every ?page=N listing although the release itself is live,
+    # so discovery alone can never reach it. The live check is what catches the
+    # next one of these; add its URL here once found.
     seed_urls:
       - https://ir.nasdaq.com/news-releases/news-release-details/annual-changes-nasdaq-100-indexr-2
       - https://ir.nasdaq.com/news-releases/news-release-details/sandisk-corporation-join-nasdaq-100-indexr-beginning-april-20
+      - https://ir.nasdaq.com/news-releases/news-release-details/lumentum-holdings-inc-join-nasdaq-100-indexr-beginning-may-18
 
   - index_name: Nasdaq-100
     source_name: Nasdaq Global Indexes NDX Overview

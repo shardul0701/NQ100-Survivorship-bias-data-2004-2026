@@ -131,6 +131,17 @@ changes:
       Nasdaq, Inc.
     announcement_date: '2026-04-10'
     confidence_score: 0.98
+  '2026-05-18':
+    difference:
+      - CSGP
+    union:
+      - LITE
+    source_url: 
+      https://ir.nasdaq.com/news-releases/news-release-details/lumentum-holdings-inc-join-nasdaq-100-indexr-beginning-may-18
+    source_title: Lumentum Holdings Inc. to Join the Nasdaq-100 Index® Beginning May 18, 2026 | 
+      Nasdaq, Inc.
+    announcement_date: '2026-05-08'
+    confidence_score: 0.98
   '2026-06-22':
     difference:
       - CHTR
@@ -149,6 +160,16 @@ changes:
     source_title: Nasdaq-100 Index® June 2026 Quarterly Changes | Nasdaq, Inc.
     announcement_date: '2026-06-11'
     confidence_score: 0.98
+  # Spin-off of Honeywell Aerospace from HON. Nasdaq announces spin-off
+  # additions only as index notices on indexes.nasdaq.com, never as an
+  # ir.nasdaq.com press release, so the release crawler cannot see them.
+  '2026-06-29':
+    union:
+      - HONA
+    evidence_url: https://github.com/jmccarrell/n100tickers/pull/78
+    evidence_note: spin-off added on its first regular-way trading day; HONA is in Nasdaq's official
+      live NDX constituent list (api.nasdaq.com) as of 2026-10-01
+    confidence_score: 0.90
   '2026-07-07':
     union:
       - SPCX
@@ -158,3 +179,33 @@ changes:
       July 7, 2026 | Nasdaq, Inc.
     announcement_date: '2026-06-26'
     confidence_score: 0.92
+  # Electronic Arts was taken private; deleted on completion, no replacement
+  # (the index had been running at 103 since the HONA/SPCX fast entries).
+  '2026-08-04':
+    difference:
+      - EA
+    evidence_url: https://github.com/jmccarrell/n100tickers/pull/81
+    evidence_note: deleted on completion of the take-private; EA is absent from Nasdaq's official 
+      live NDX constituent list (api.nasdaq.com) as of 2026-10-01
+    confidence_score: 0.90
+  # Kraft Heinz transferred its listing to NYSE; non-Nasdaq listings are
+  # ineligible, so it was deleted with no replacement.
+  '2026-09-14':
+    difference:
+      - KHC
+    evidence_url: https://github.com/jmccarrell/n100tickers/pull/94
+    evidence_note: deleted on the exchange transfer; KHC is absent from Nasdaq's official live NDX 
+      constituent list (api.nasdaq.com) as of 2026-10-01
+    confidence_score: 0.90
+  '2026-10-09':
+    difference:
+      - WBD
+    union:
+      - MRNA
+    source_url: 
+      https://ir.nasdaq.com/news-releases/news-release-details/moderna-inc-join-nasdaq-100-indexr-beginning-october-9-2026
+    source_title: Moderna, Inc. to Join the Nasdaq-100 Index® Beginning October 9, 2026 | Nasdaq, 
+      Inc.
+    announcement_date: '2026-10-01'
+    confidence_score: 0.98
+    pending: true
