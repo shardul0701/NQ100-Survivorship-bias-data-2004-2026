@@ -186,8 +186,22 @@ def fetch_nasdaq_api() -> tuple[set[str], date, str]:
     rows = ((payload.get("data") or {}).get("rows")) or []
     tickers = {str(r["symbol"]).strip().upper() for r in rows if r.get("symbol")}
     stamp = payload.get("date") or (payload.get("data") or {}).get("asOf")
-    as_of = datetime.strptime(stamp.strip(), "%b %d, %Y").date() if stamp else date.today()
+    as_of = parse_nasdaq_stamp(stamp) if stamp else date.today()
     return tickers, as_of, url
+
+
+NASDAQ_STAMP = re.compile(r"[A-Z][a-z]{2} \d{1,2}, \d{4}")
+
+
+def parse_nasdaq_stamp(stamp: str) -> date:
+    """The list's date. After the close Nasdaq sends 'Oct 5, 2026'; during the
+    session it appends the time ('Oct 5, 2026  3:47 PM'), which is when the
+    scheduled run fires. Any other shape still raises, so a real format change
+    surfaces as source_error instead of a silently wrong window."""
+    m = NASDAQ_STAMP.search(stamp)
+    if not m:
+        raise ValueError(f"unrecognised Nasdaq date stamp {stamp!r}")
+    return datetime.strptime(m.group(0), "%b %d, %Y").date()
 
 
 def fetch_upstream_n100tickers() -> tuple[set[str], date, str]:
