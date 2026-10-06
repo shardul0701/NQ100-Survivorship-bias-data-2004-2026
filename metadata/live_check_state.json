@@ -1,6 +1,6 @@
 {
   "index_name": "Nasdaq-100",
-  "checked_at": "2026-10-05T19:47:51+00:00",
+  "checked_at": "2026-10-06T17:11:13+00:00",
   "status": "source_error",
   "pit_count_today": 101,
   "official_source": "nasdaq_api",
@@ -12,7 +12,7 @@
       "reachable": false,
       "as_of": null,
       "count": 0,
-      "error": "ValueError: unconverted data remains:  3:47 PM",
+      "error": "ValueError: unconverted data remains:  1:10 PM",
       "missing_from_pit": [],
       "extra_in_pit": [],
       "window": []
@@ -22,16 +22,16 @@
       "url": "https://raw.githubusercontent.com/jmccarrell/n100tickers/main/src/nasdaq_100_ticker_history/n100-ticker-changes-2026.yaml",
       "role": "advisory",
       "reachable": true,
-      "as_of": "2026-10-05",
+      "as_of": "2026-10-06",
       "count": 101,
       "error": null,
       "missing_from_pit": [],
       "extra_in_pit": [],
       "window": [
-        "2026-10-02",
         "2026-10-05",
         "2026-10-06",
-        "2026-10-07"
+        "2026-10-07",
+        "2026-10-08"
       ]
     }
   ],
