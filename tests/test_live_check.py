@@ -89,6 +89,20 @@ def test_share_class_punctuation_is_not_a_mismatch_but_share_classes_are_distinc
     assert L.compare_key("GOOG", {}) != L.compare_key("GOOGL", {})
 
 
+@pytest.mark.parametrize(
+    "stamp",
+    ["Oct 5, 2026", "Oct 5, 2026  3:47 PM", "Oct 5, 2026 3:47 PM", " Oct 5, 2026 "],
+)
+def test_nasdaq_stamp_parses_with_and_without_the_session_time(stamp):
+    # The 2026-10-05 scheduled run (19:47Z, mid-session) failed on the time suffix.
+    assert L.parse_nasdaq_stamp(stamp) == date(2026, 10, 5)
+
+
+def test_an_unrecognised_nasdaq_stamp_still_raises():
+    with pytest.raises(ValueError):
+        L.parse_nasdaq_stamp("2026-10-05")
+
+
 def test_weekday_window_skips_weekends():
     assert [d.isoformat() for d in L.weekday_window(date(2026, 10, 5))] == [
         "2026-10-02",
