@@ -1,13 +1,26 @@
 {
   "index_name": "Nasdaq-100",
-  "fetched_at": "2026-10-07T17:49:21+00:00",
+  "fetched_at": "2026-10-08T17:52:40+00:00",
   "sources_attempted": 1,
-  "candidate_urls": 8,
+  "candidate_urls": 0,
   "discovery_sources": 1,
-  "crawled_urls": 6,
-  "parsed_candidates": 8,
-  "manual_review_items": 1,
-  "errors": [],
-  "successful_fetches": 12,
-  "successful": true
+  "crawled_urls": 0,
+  "parsed_candidates": 0,
+  "manual_review_items": 0,
+  "errors": [
+    "https://ir.nasdaq.com/news-and-events/press-releases: 403 Client Error: Forbidden for url: https://ir.nasdaq.com/news-and-events/press-releases",
+    "https://ir.nasdaq.com/news-and-events/press-releases?page=1: 403 Client Error: Forbidden for url: https://ir.nasdaq.com/news-and-events/press-releases?page=1",
+    "https://ir.nasdaq.com/news-and-events/press-releases?page=2: 403 Client Error: Forbidden for url: https://ir.nasdaq.com/news-and-events/press-releases?page=2",
+    "https://ir.nasdaq.com/news-and-events/press-releases?page=3: 403 Client Error: Forbidden for url: https://ir.nasdaq.com/news-and-events/press-releases?page=3",
+    "https://ir.nasdaq.com/news-and-events/press-releases?page=4: 403 Client Error: Forbidden for url: https://ir.nasdaq.com/news-and-events/press-releases?page=4",
+    "https://ir.nasdaq.com/news-and-events/press-releases?page=5: 403 Client Error: Forbidden for url: https://ir.nasdaq.com/news-and-events/press-releases?page=5",
+    "https://ir.nasdaq.com/news-and-events/press-releases?page=6: 403 Client Error: Forbidden for url: https://ir.nasdaq.com/news-and-events/press-releases?page=6",
+    "https://ir.nasdaq.com/news-and-events/press-releases?page=7: 403 Client Error: Forbidden for url: https://ir.nasdaq.com/news-and-events/press-releases?page=7",
+    "https://ir.nasdaq.com/news-and-events/press-releases?page=8: 403 Client Error: Forbidden for url: https://ir.nasdaq.com/news-and-events/press-releases?page=8",
+    "https://ir.nasdaq.com/news-releases/news-release-details/annual-changes-nasdaq-100-indexr-2: 403 Client Error: Forbidden for url: https://ir.nasdaq.com/news-releases/news-release-details/annual-changes-nasdaq-100-indexr-2",
+    "https://ir.nasdaq.com/news-releases/news-release-details/sandisk-corporation-join-nasdaq-100-indexr-beginning-april-20: 403 Client Error: Forbidden for url: https://ir.nasdaq.com/news-releases/news-release-details/sandisk-corporation-join-nasdaq-100-indexr-beginning-april-20",
+    "https://ir.nasdaq.com/news-releases/news-release-details/lumentum-holdings-inc-join-nasdaq-100-indexr-beginning-may-18: 403 Client Error: Forbidden for url: https://ir.nasdaq.com/news-releases/news-release-details/lumentum-holdings-inc-join-nasdaq-100-indexr-beginning-may-18"
+  ],
+  "successful_fetches": 0,
+  "successful": false
 }
