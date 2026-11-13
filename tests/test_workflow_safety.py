@@ -13,8 +13,9 @@ def test_refresh_cannot_auto_merge_before_all_release_gates():
     opened = workflow.index("- name: Open review pull request")
     live_gate = workflow.index("- name: Gate on the live constituent check")
     alert_gate = workflow.index("- name: Fail if an alert could not be raised")
+    freshness_gate = workflow.index("- name: Gate on official-source freshness")
     merge = workflow.index("- name: Auto-merge the validated membership PR")
-    assert opened < live_gate < alert_gate < merge
+    assert opened < live_gate < alert_gate < freshness_gate < merge
     assert "gh pr merge" not in workflow[opened:live_gate]
 
 

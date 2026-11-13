@@ -131,6 +131,12 @@ jobs:
           echo "::error::An alert step failed (see its log); the condition it was reporting may be unannounced."
           exit 1
 
+      - name: Gate on official-source freshness
+        # The current list can match while every announcement fetch is blocked.
+        # Keep the report/PR visible, but do not auto-merge an unverified update.
+        if: ${{ !cancelled() }}
+        run: python scripts/gate_freshness.py
+
       - name: Auto-merge the validated membership PR
         if: ${{ steps.review_pr.outputs.url != '' }}
         env:
