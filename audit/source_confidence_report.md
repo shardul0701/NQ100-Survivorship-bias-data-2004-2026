@@ -1,6 +1,6 @@
 # Source Confidence Report
 
-Generated: 2026-11-23T22:38:24+00:00
+Generated: 2026-11-24T21:11:03+00:00
 
 - Candidate changes: 0
 - Manual-review items: 0
