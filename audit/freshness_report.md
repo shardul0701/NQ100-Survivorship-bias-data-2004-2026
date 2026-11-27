@@ -1,19 +1,19 @@
 # Data Freshness Report
 
-Generated: 2026-11-26T20:10:25+00:00
+Generated: 2026-11-27T19:56:47+00:00
 
 - **index_name**: Nasdaq-100
 - **latest_yaml_year**: 2026
 - **latest_change_date**: 2026-10-09
-- **latest_official_source_checked**: 2026-11-26T20:10:19+00:00
+- **latest_official_source_checked**: 2026-11-27T19:56:44+00:00
 - **latest_successful_fetch**: None
 - **latest_trusted_date**: 2026-10-09
 - **stale_after_date**: 2027-11-13
 - **live_check_status**: pass
-- **latest_live_check**: 2026-11-26T20:10:23+00:00
-- **latest_live_check_pass**: 2026-11-26T20:10:23+00:00
+- **latest_live_check**: 2026-11-27T19:56:46+00:00
+- **latest_live_check_pass**: 2026-11-27T19:56:46+00:00
 - **confidence_level**: stale_or_incomplete
-- **notes**: ["latest membership change is 48 days old (2026-10-09); within this index's normal cadence"]
+- **notes**: ["latest membership change is 49 days old (2026-10-09); within this index's normal cadence"]
 
 ## Warnings
 
